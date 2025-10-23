@@ -1,0 +1,379 @@
+/* ========= Variables base ========= */
+:root{
+  --bg:#0f1115;
+  --surface:#171a20;
+  --surface-2:#1f232b;
+  --text:#e6e8ec;
+  --muted:#9aa3af;
+  --accent:#4fd1c5;
+  --warn:#f59e0b;
+  --ok:#22c55e;
+
+  --radius:16px;
+  --shadow:0 8px 24px rgba(0,0,0,.25);
+
+  --space-1:8px;
+  --space-2:16px;
+  --space-3:24px;
+  --space-4:32px;
+
+  /* Animación (valores por defecto) */
+  --needle-min-rot:-12deg;
+  --needle-max-rot: 12deg;
+  --needle-speed: 4s;
+  --fuel-speed: 3s;
+  --pulse-max: 1.3;
+}
+
+/* ========= Reset ligero ========= */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+  color:var(--text);
+  background:linear-gradient(180deg, #0b0d10 0%, var(--bg) 100%);
+}
+
+/* ========= Helpers ========= */
+.container{
+  width: min(1100px, 92%);
+  margin-inline:auto;
+  padding-block: var(--space-3);
+}
+
+.site-header{
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:rgba(0,0,0,.15);
+  backdrop-filter: blur(6px);
+}
+.site-header h1{
+  margin:0 0 6px 0;
+  font-size: clamp(20px, 3.5vw, 32px);
+  letter-spacing:.3px;
+}
+.subtitle{margin:0;color:var(--muted);font-size:14px}
+
+.site-footer{
+  padding-block: var(--space-3);
+  border-top:1px solid rgba(255,255,255,.08);
+  color:var(--muted);
+  text-align:center;
+}
+
+/* ========= Cards ========= */
+.card{
+  background:var(--surface);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding: var(--space-3);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.card:hover,
+.card:focus-within{
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0,0,0,.35);
+}
+
+/* ========= KPIs grid ========= */
+.kpis{
+  display:grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-3);
+  margin-block: var(--space-3);
+}
+.kpi-title{
+  margin:0 0 6px 0;
+  font-size:14px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+.kpi-value{
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(22px, 4vw, 36px);
+  font-weight:700;
+  margin-bottom:8px;
+}
+.kpi-value small{font-size:.5em;color:var(--muted);margin-left:6px}
+.kpi-note{margin:0;color:var(--muted);font-size:12px}
+
+.fuel-bar{
+  width:100%;
+  height:12px;
+  background:var(--surface-2);
+  border-radius:999px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.06);
+  margin:6px 0 8px 0;
+}
+.fuel-fill{
+  height:100%;
+  background: linear-gradient(90deg, var(--warn), var(--accent));
+  animation: fuelPulse var(--fuel-speed) ease-in-out infinite alternate;
+}
+@keyframes fuelPulse{
+  0% { filter: brightness(1); }
+  100% { filter: brightness(var(--pulse-max)); }
+}
+
+/* Dots */
+.dot{
+  display:inline-block;
+  width:10px;height:10px;border-radius:50%;
+  margin-right:6px;background:var(--muted);
+  vertical-align:middle;
+}
+.dot-ok{background:var(--ok)}
+.dot-warn{background:var(--warn)}
+
+/* ========= Dashboard ========= */
+.dashboard{
+  display:grid;
+  grid-template-columns: 2fr 1.5fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.dials{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* Dial base */
+.dial-face{
+  position:relative;
+  background: radial-gradient(120% 120% at 50% -10%, #2a2f3a 0%, var(--surface) 55%);
+  border-radius: var(--radius);
+  height: 260px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.06);
+}
+.dial-center{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 20px var(--accent);
+}
+.dial-markers{
+  position:absolute; inset: 16px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  color:var(--muted); font-size:12px; pointer-events:none;
+}
+.dial-needle{
+  position:absolute; width:2px; height:42%;
+  background:var(--accent);
+  top:18%; left:50%;
+  transform:translateX(-50%) rotate(0deg);
+  transform-origin: bottom center;
+  box-shadow: 0 0 18px rgba(79,209,197,.7);
+}
+.dial-caption{margin:.6rem 0 0 0; color:var(--muted); font-size:12px}
+
+/* Indicadores de direccionales y motor (acelerómetro) */
+.sig{
+  position:absolute; top:16px; width:14px; height:14px;
+  border-radius:50%;
+  background:#3f4a5d;
+  box-shadow: inset 0 0 6px rgba(0,0,0,.6);
+  border:1px solid rgba(255,255,255,.08);
+}
+.sig-left{ left:16px; }
+.sig-right{ right:16px; }
+.sig.on{ background:#22c55e; box-shadow: 0 0 14px #22c55e; }
+
+.engine-led{
+  position:absolute; top:16px; left:50%; transform:translateX(-50%);
+  width:12px;height:12px;border-radius:50%;
+  background:#7f1d1d;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow: inset 0 0 4px rgba(0,0,0,.6);
+}
+.engine-led.on{
+  background:#22c55e;
+  box-shadow: 0 0 12px rgba(34,197,94,.9);
+}
+
+/* Velocímetro */
+.speed-face{ /* mismo estilo base, opcionalmente distinto fondo */}
+.speed-markers{
+  position:absolute; inset: 16px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  color:var(--muted); font-size:12px; pointer-events:none;
+}
+.speed-needle{
+  position:absolute; width:3px; height:44%;
+  background:linear-gradient(180deg, var(--accent), #9be8df);
+  top:16%; left:50%;
+  transform:translateX(-50%) rotate(-60deg);
+  transform-origin: bottom center;
+  box-shadow: 0 0 18px rgba(79,209,197,.7);
+  border-radius: 3px;
+}
+
+/* Meters */
+.meters{display:grid; gap: var(--space-3)}
+.meter-block h3{margin:0 0 6px 0; font-size:14px; color:var(--muted); letter-spacing:.6px}
+.odometer,.trip{
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(22px, 4vw, 34px);
+  font-weight:700;
+  background: var(--surface-2);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border:1px solid rgba(255,255,255,.06);
+  display:inline-block;
+}
+.odometer small,.trip small{font-size:.5em;color:var(--muted);margin-left:6px}
+
+/* Tacómetro (barra) */
+.tach{display:block}
+.tach-bar{
+  width:100%; height:16px; border-radius:999px;
+  background:var(--surface-2);
+  border:1px solid rgba(255,255,255,.06);
+  overflow:hidden;
+}
+.tach-fill{
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, #16a34a, #f59e0b, #ef4444);
+  transition: width .12s linear;
+}
+.tach-scale{
+  display:flex; justify-content:space-between; color:var(--muted);
+  font-size:12px; margin-top:6px;
+}
+
+/* ========= Botones y controles ========= */
+.btn{
+  display:inline-block; margin-top:10px;
+  background:transparent; color:var(--text);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:10px; padding:10px 14px; cursor:pointer;
+  transition: border-color .2s ease, background .2s ease, transform .06s ease;
+}
+.btn:hover{ background: rgba(79,209,197,.08); border-color: var(--accent); }
+.btn:active{ transform: translateY(1px); }
+.btn[disabled]{ opacity:.6; cursor:not-allowed; }
+
+.btn-wide{ width:100%; text-align:center; }
+
+.pedals{
+  display:flex; gap: var(--space-2); flex-wrap:wrap;
+}
+.pedal{
+  min-width:150px; font-weight:600;
+}
+.pedal.accel{ border-color:#16a34a; }
+.pedal.brake{ border-color:#ef4444; }
+
+.signals{
+  display:flex; gap: var(--space-2); flex-wrap:wrap;
+}
+.help .hint{ margin:.4rem 0 0 0; color:var(--muted); font-size:12px }
+
+.controls-title{ margin:0 0 12px 0; font-size:16px; color:var(--muted); }
+.controls-grid{
+  display:grid; gap: var(--space-2);
+}
+
+/* ========= Switches (toolbar) ========= */
+.switch{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  cursor: pointer;
+}
+.switch input{
+  position: absolute;
+  opacity: 0;
+  width: 1px; height: 1px;
+}
+.switch-ui{
+  width: 44px; height: 24px; border-radius: 999px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.25);
+  position: relative;
+  transition: background .2s ease, border-color .2s ease;
+}
+.switch-ui::after{
+  content:"";
+  position: absolute; top: 2px; left: 2px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--text);
+  transition: transform .2s ease;
+}
+.switch input:checked + .switch-ui{
+  background: rgba(79,209,197,.22);
+  border-color: rgba(79,209,197,.6);
+}
+.switch input:checked + .switch-ui::after{
+  transform: translateX(20px);
+}
+.switch-label{
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ========= Tema Día/Noche con :has() ========= */
+body:has(#themeToggle:checked){
+  --bg:#f6f7f9;
+  --surface:#ffffff;
+  --surface-2:#eef1f5;
+  --text:#0b1020;
+  --muted:#4b5563;
+  --accent:#0ea5e9;
+  --warn:#b45309;
+  --ok:#15803d;
+  color: var(--text);
+  background: linear-gradient(180deg, #f3f4f6 0%, var(--bg) 100%);
+}
+body:has(#themeToggle:checked) .site-header{
+  background: rgba(255,255,255,.65);
+  border-bottom:1px solid rgba(0,0,0,.06);
+  backdrop-filter: blur(6px);
+}
+body:has(#themeToggle:checked) .site-footer{
+  border-top:1px solid rgba(0,0,0,.06);
+}
+body:has(#themeToggle:checked) .card,
+body:has(#themeToggle:checked) .fuel-bar,
+body:has(#themeToggle:checked) .odometer,
+body:has(#themeToggle:checked) .trip{
+  border-color: rgba(0,0,0,.08);
+}
+body:has(#themeToggle:checked) .dial-face{
+  background: radial-gradient(120% 120% at 50% -10%, #dfe6f3 0%, var(--surface) 55%);
+}
+
+/* ========= Modo Demo ========= */
+body:has(#demoToggle:checked){
+  --needle-min-rot:-25deg;
+  --needle-max-rot: 25deg;
+  --needle-speed: 2s;
+  --fuel-speed: 1.5s;
+  --pulse-max: 1.6;
+}
+
+/* ========= Responsive ========= */
+@media (max-width: 1100px){
+  .kpis{grid-template-columns:1fr 1fr 1fr}
+}
+@media (max-width: 900px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .dashboard{grid-template-columns:1fr}
+  .dials{grid-template-columns:1fr}
+  .dial-face{height:220px}
+}
+@media (max-width: 600px){
+  .kpis{grid-template-columns:1fr}
+  .dashboard{gap: var(--space-2)}
+  .card{padding: var(--space-2)}
+  .odometer, .trip{ font-size: 22px }
+  .dial-face{ height:180px }
+  .site-header h1{ font-size:22px }
+}

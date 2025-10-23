@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Conducción — Demo Interactiva</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <meta name="color-scheme" content="dark light" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <div class="container">
+      <h1>Panel de Conducción</h1>
+      <p class="subtitle">Tablero artesanal para clase (HTML + CSS + JS básico)</p>
+
+      <!-- Toolbar: Tema, Demo, Unidades y Sonido -->
+      <div class="toolbar" role="group" aria-label="Controles de apariencia">
+        <label class="switch" title="Cambiar tema (Día/Noche)">
+          <input type="checkbox" id="themeToggle" />
+          <span class="switch-ui" aria-hidden="true"></span>
+          <span class="switch-label">🌙/☀️ Tema</span>
+        </label>
+
+        <label class="switch" title="Activar Modo Demo (animaciones más notorias)">
+          <input type="checkbox" id="demoToggle" />
+          <span class="switch-ui" aria-hidden="true"></span>
+          <span class="switch-label">🎛️ Demo</span>
+        </label>
+
+        <label class="switch" title="Cambiar unidades de consumo (L/100km ↔ km/L)">
+          <input type="checkbox" id="unitToggle" />
+          <span class="switch-ui" aria-hidden="true"></span>
+          <span class="switch-label">🔁 Unidades</span>
+        </label>
+
+        <label class="switch" title="Activar sonidos (beep)">
+          <input type="checkbox" id="soundToggle" />
+          <span class="switch-ui" aria-hidden="true"></span>
+          <span class="switch-label">🔊 Sonido</span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <main class="site-main" role="main">
+    <div class="container">
+
+      <!-- KPIs -->
+      <section class="kpis" aria-label="Indicadores de conducción">
+        <article class="card kpi" aria-label="Aceleración actual">
+          <h2 class="kpi-title">Aceleración</h2>
+          <div class="kpi-value">
+            <span id="accVal" aria-live="polite">+0.00</span><small> m/s²</small>
+          </div>
+          <p class="kpi-note">Lectura instantánea</p>
+        </article>
+
+        <article class="card kpi" aria-label="Velocidad">
+          <h2 class="kpi-title">Velocidad</h2>
+          <div class="kpi-value">
+            <span id="spdVal">0</span><small> km/h</small>
+          </div>
+          <p class="kpi-note">Velocidad actual</p>
+        </article>
+
+        <article class="card kpi" aria-label="Consumo de combustible">
+          <h2 class="kpi-title">Consumo</h2>
+          <div class="kpi-value">
+            <span id="consVal">—</span>
+            <small id="consUnit"> L/100 km</small>
+          </div>
+          <p class="kpi-note">Promedio estimado</p>
+        </article>
+
+        <article class="card kpi" aria-label="Revoluciones por minuto">
+          <h2 class="kpi-title">RPM</h2>
+          <div class="kpi-value">
+            <span id="rpmVal">800</span><small> rpm</small>
+          </div>
+          <p class="kpi-note">Tacómetro</p>
+        </article>
+
+        <article class="card kpi" aria-label="Nivel de combustible">
+          <h2 class="kpi-title">Combustible</h2>
+          <div class="fuel-bar" role="img" aria-label="Barra de combustible">
+            <div class="fuel-fill" id="fuelFill" style="width: 60%"></div>
+          </div>
+          <p class="kpi-note"><span class="dot dot-ok" aria-hidden="true"></span> Nivel saludable</p>
+        </article>
+      </section>
+
+      <!-- Tablero principal -->
+      <section class="dashboard" aria-label="Tablero principal">
+        <!-- Dos diales lado a lado -->
+        <div class="dials">
+          <!-- Acelerómetro -->
+          <div class="card dial" aria-label="Dial de acelerómetro (demo)">
+            <div class="dial-face">
+              <!-- Indicadores -->
+              <div class="sig sig-left" id="sigLeft" aria-hidden="true"></div>
+              <div class="sig sig-right" id="sigRight" aria-hidden="true"></div>
+              <div class="engine-led" id="engineLed" title="Estado del motor"></div>
+
+              <div class="dial-center"></div>
+              <div class="dial-markers">
+                <span>−2g</span><span>−1g</span><span>0</span><span>+1g</span><span>+2g</span>
+              </div>
+              <div class="dial-needle" id="needle" aria-hidden="true"></div>
+            </div>
+            <p class="dial-caption">Acelerómetro (simulado)</p>
+          </div>
+
+          <!-- Velocímetro -->
+          <div class="card dial" aria-label="Dial de velocímetro (demo)">
+            <div class="dial-face speed-face">
+              <div class="dial-center"></div>
+              <div class="speed-markers">
+                <span>0</span><span>50</span><span>100</span><span>150</span><span>200</span>
+              </div>
+              <div class="speed-needle" id="speedNeedle" aria-hidden="true"></div>
+            </div>
+            <p class="dial-caption">Velocímetro (km/h)</p>
+          </div>
+        </div>
+
+        <!-- Odómetro, Trip y Tacómetro (barra) -->
+        <div class="card meters" aria-label="Odómetro, viaje y tacómetro">
+          <div class="meter-block">
+            <h3>Odómetro</h3>
+            <div class="odometer" id="odoVal" aria-live="polite">123 456.7 <small>km</small></div>
+          </div>
+
+          <div class="meter-block">
+            <h3>Trip</h3>
+            <div class="trip" id="tripVal" aria-live="polite">012.3 <small>km</small></div>
+            <button class="btn" id="resetBtn" type="button" title="Reset del viaje">Reset</button>
+            <p class="hint">* Simulación en el navegador (JS).</p>
+          </div>
+
+          <div class="meter-block">
+            <h3>Tacómetro</h3>
+            <div class="tach" role="img" aria-label="Barra de tacómetro (rpm)">
+              <div class="tach-bar">
+                <div class="tach-fill" id="tachFill" style="width: 18%"></div>
+              </div>
+              <div class="tach-scale">
+                <span>0</span><span>1k</span><span>2k</span><span>3k</span><span>4k</span><span>5k</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meter-block">
+            <h3>Modo</h3>
+            <div class="mode">
+              <span class="tag">Demo</span>
+              <span class="tag tag-muted">JS básico</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Controles interactivos -->
+      <section class="controls card" aria-label="Controles del vehículo">
+        <h2 class="controls-title">Controles</h2>
+        <div class="controls-grid">
+          <button class="btn btn-wide" id="engineBtn" aria-pressed="false" title="E para alternar">
+            🟢 Encender motor
+          </button>
+
+          <div class="pedals">
+            <button class="btn pedal accel" id="accelBtn" title="Mantén presionado o usa ↑">
+              ⬆️ Acelerar
+            </button>
+            <button class="btn pedal brake" id="brakeBtn" title="Mantén presionado o usa ↓">
+              ⬇️ Frenar
+            </button>
+          </div>
+
+          <div class="signals">
+            <button class="btn" id="leftBtn" aria-pressed="false" title="←">
+              ⬅️ Direccional Izquierda
+            </button>
+            <button class="btn" id="rightBtn" aria-pressed="false" title="→">
+              ➡️ Direccional Derecha
+            </button>
+            <button class="btn" id="hazardBtn" aria-pressed="false" title="H">
+              🚨 Intermitentes
+            </button>
+          </div>
+
+          <div class="help">
+            <p class="hint">
+              Atajos: <b>E</b> motor, <b>↑</b> acelerar, <b>↓</b> frenar,
+              <b>←/→</b> direccionales, <b>H</b> intermitentes, <b>R</b> reset trip.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <small>Hecho para clase — HTML + CSS “artesanal” + JS básico.</small>
+    </div>
+  </footer>
+
+  <!-- Script principal -->
+  <script src="js/app.js" defer></script>
+</body>
+</html>
